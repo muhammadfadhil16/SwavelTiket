@@ -1,0 +1,53 @@
+name: TicketAja CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  laravel:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout kode dari repositori
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup PHP environment
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo, mysql
+
+      # Step 3: Setup cache composer
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # Step 5: Setup environment
+      - name: Setup environment
+        run: cp .env.example .env
+
+      # Step 6: Generate application key
+      - name: Generate application key
+        run: php artisan key:generate
+
+      # Step 8: Run tests
+      - name: Run tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: mysql
+          DB_DATABASE: tiketaja
+        run: php artisan test

@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+#notification {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    display: none;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    max-width: 400px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    transition: all 0.5s ease;
+}
+#notification.success {
+    background-color: #4caf50; /* Green */
+}
+#notification.error {
+    background-color: #f44336; /* Red */
+}
