@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -68,25 +69,34 @@ class OrderController extends Controller
 
     private function createOrderDetail(Order $order)
     {
-        $ticket = $order->ticket;
+        DB::beginTransaction();
 
-        $orderDetail = OrderDetail::create([
-            'id_order' => $order->id_order,
-            'id_ticket' => $ticket->id_ticket,
-        ]);
+        try {
+            $ticket = $order->ticket;
 
-        // Format QR Code: "|id_order_detail|id_order|id_ticket"
-        $qrCodeContent = "|{$orderDetail->id_order_detail}|{$orderDetail->id_order}|{$orderDetail->id_ticket}|random:" . Str::random(10);
-        $qrCode = new QrCode($qrCodeContent);
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
+            $orderDetail = OrderDetail::create([
+                'id_order' => $order->id_order,
+                'id_ticket' => $ticket->id_ticket,
+            ]);
 
-        // Simpan QR Code ke storage
-        $qrCodeFilename = 'qrcodes/' . Str::random(20) . '.png';
-        Storage::disk('public')->put($qrCodeFilename, $result->getString());
+            // Format QR Code
+            $qrCodeContent = "|{$orderDetail->id_order_detail}|{$orderDetail->id_order}|{$orderDetail->id_ticket}|random:" . Str::random(10);
+            $qrCode = new QrCode($qrCodeContent);
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
 
-        // Simpan path QR Code ke database
-        $orderDetail->update(['qr_code' => $qrCodeFilename]);
+            // Simpan QR Code ke storage
+            $qrCodeFilename = 'qrcodes/' . Str::random(20) . '.png';
+            Storage::disk('public')->put($qrCodeFilename, $result->getString());
+
+            // Simpan path QR Code ke database
+            $orderDetail->update(['qr_code' => $qrCodeFilename]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function showPaymentProof(Order $order)

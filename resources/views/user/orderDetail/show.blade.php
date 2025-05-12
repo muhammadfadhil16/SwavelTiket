@@ -38,7 +38,7 @@
                     <!-- Status -->
                     <div class="text-center mt-4">
                         <p class="text-lg text-gray-700"><strong>Status:</strong></p>
-                        @if ($orderDetail->ticketValidation && $orderDetail->ticketValidation->is_valid)
+                        @if ($orderDetail->is_validated)
                             <span class="text-green-500 font-semibold">Aktif</span>
                         @elseif ($orderDetail->status == 'expired')
                             <span class="text-red-500 font-semibold">Kedaluwarsa</span>

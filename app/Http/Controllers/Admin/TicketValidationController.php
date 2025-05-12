@@ -65,72 +65,53 @@ class TicketValidationController extends Controller
     public function validateTicket(Request $request)
     {
         try {
-            // Log QR code yang diterima untuk debugging
+            // Simulasi waktu tunggu untuk debugging
+            sleep(2);
+
+            // Validasi input
+            $request->validate([
+                'qr_code' => 'required|string',
+            ]);
+
             $qrCode = $request->input('qr_code');
             Log::info('QR Code diterima:', ['qr_code' => $qrCode]);
 
             // Memisahkan QR code untuk mendapatkan ID detail order
             $parts = explode('|', $qrCode);
-            $id_order_detail = $parts[1] ?? null; // Bagian kedua adalah ID Order Detail
+            $id_order_detail = $parts[1] ?? null;
 
-            // Jika ID detail order tidak valid, kembalikan respons error
             if (!$id_order_detail || !is_numeric($id_order_detail)) {
                 Log::error('Format QR Code tidak valid', ['qr_code' => $qrCode]);
-                session()->flash('status', 'qr.error');
                 return response()->json(['success' => false, 'message' => 'Format QR Code tidak valid'], 400);
             }
 
             Log::info('Mencari Order Detail:', ['id_order_detail' => $id_order_detail]);
 
+            // Cari data OrderDetail berdasarkan ID
             $orderDetail = OrderDetail::find($id_order_detail);
 
             if (!$orderDetail) {
                 Log::error('Order Detail tidak ditemukan di database.', ['id_order_detail' => $id_order_detail]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order Detail tidak ditemukan.',
-                ], 404);
+                return response()->json(['success' => false, 'message' => 'Order Detail tidak ditemukan.'], 404);
             }
 
-            Log::info('Order Detail ditemukan:', ['order_detail' => $orderDetail]);
+            Log::info('Status validasi:', ['is_validated' => $orderDetail->is_validated]);
 
-            // Memeriksa apakah tiket sudah divalidasi sebelumnya
-            $ticketValidation = TicketValidation::where('id_order_detail', $id_order_detail)->first();
-            if ($ticketValidation && $ticketValidation->is_valid) {
+            if ($orderDetail->is_validated) {
                 Log::warning('Tiket sudah divalidasi', ['id_order_detail' => $id_order_detail]);
-                session()->flash('status', 'qr.error');
-                return response()->json(['success' => false, 'message' => 'Tiket sudah divalidasi'], 400);
+                return response()->json(['success' => false, 'message' => 'Tiket sudah divalidasi sebelumnya.']);
             }
 
-            // Memastikan id_order tidak null
-            if (!$orderDetail->id_order) {
-                Log::error('ID Order tidak ditemukan untuk Order Detail', ['id_order_detail' => $id_order_detail]);
-                session()->flash('status', 'qr.error');
-                return response()->json(['success' => false, 'message' => 'ID Order tidak ditemukan untuk Order Detail ini'], 400);
-            }
+            // Tandai tiket sebagai valid
+            $orderDetail->update(['is_validated' => true]);
 
-            // Menandai tiket sebagai valid
-            TicketValidation::updateOrCreate(
-                ['id_order_detail' => $id_order_detail],
-                [
-                    'id_order' => $orderDetail->id_order,
-                    'id_ticket' => $orderDetail->id_ticket,
-                    'is_valid' => true,
-                    'validation_date' => now(),
-                ]
-            );
-
-            // Log sukses validasi tiket
             Log::info('Tiket berhasil divalidasi', ['id_order_detail' => $id_order_detail]);
-            session()->flash('status', 'qr.success');
-            return response()->json(['success' => true, 'message' => 'Tiket berhasil divalidasi']);
+            return response()->json(['success' => true, 'message' => 'QR Code berhasil diverifikasi!']);
         } catch (\Exception $e) {
-            // Log error jika terjadi exception
             Log::error('Terjadi kesalahan saat memvalidasi tiket:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            session()->flash('status', 'qr.error');
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memvalidasi tiket.'], 500);
         }
     }

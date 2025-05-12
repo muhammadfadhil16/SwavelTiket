@@ -19,7 +19,7 @@
             <p class="text-lg"><strong>Harga per Tiket:</strong> Rp {{ number_format($checkoutData['ticket_price'] ?? 0, 0, ',', '.') }}</p>
             <p class="text-lg"><strong>Jumlah:</strong> {{ $checkoutData['quantity'] ?? 0 }}</p>
             <p class="text-lg"><strong>Total Harga:</strong> Rp {{ number_format($checkoutData['total_price'] ?? 0, 0, ',', '.') }}</p>
-            <p class="text-lg"><strong>No Rekening:</strong> 88215542390123 (BCA An Supriyadi)</p>
+            <p class="text-lg"><strong>No Rekening:</strong> 88215542390123 (BCA An Tiketaja)</p>
         </div>
 
         <!-- Upload Payment Proof -->

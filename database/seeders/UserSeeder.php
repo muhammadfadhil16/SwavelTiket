@@ -8,22 +8,25 @@ use App\Models\User;
 class UserSeeder extends Seeder
 {
     /**
-     * Jalankan seeder untuk mengisi data tiket.
+     * Jalankan seeder untuk mengisi data pengguna.
      *
      * @return void
      */
     public function run()
     {
-        // Menggunakan factory untuk membuat 50 data tiket
+        // Membuat data pengguna Admin
         User::factory()->create([
-            'name_user' => 'Admin',
-            'email_user' => 'admin@gmail.com',
+            'name_user' => 'Admin2',
+            'email_user' => 'admin2@gmail.com',
+            'password' => bcrypt('admin123'), // Menggunakan bcrypt untuk hashing password
             'role' => 'Admin'
         ]);
 
-        user::factory()->create([
-            'name_user' => 'User',
-            'email_user' => 'user@gmail.com',
+        // Membuat data pengguna User
+        User::factory()->create([
+            'name_user' => 'User2',
+            'email_user' => 'user2@gmail.com',
+            'password' => bcrypt('user123'), // Menggunakan bcrypt untuk hashing password
             'role' => 'User'
         ]);
     }

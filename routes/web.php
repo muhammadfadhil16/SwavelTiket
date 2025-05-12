@@ -32,7 +32,7 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/login', [AuthController::class, 'logout'])->name('logout');
 
 // -------------------Admin--------------------------
 Route::prefix('admin')->middleware('auth')->group(function () {
@@ -77,7 +77,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Notifications
     Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('admin.notifications.index');
     Route::post('/admin/notifications/read', [AdminNotificationController::class, 'markAsRead'])->name('admin.notifications.read');
-    Route::delete('/admin/notifications/delete', [AdminNotificationController::class, 'delete'])->name('admin.notifications.delete');
+    Route::delete('/admin/notifications/deleteAll', [AdminNotificationController::class, 'deleteAll'])->name('admin.notifications.deleteAll');
 
 
 });
@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/notifications', [UserNotificationController::class, 'index'])->name('user.notifications.index');
         Route::post('/notifications/read', [UserNotificationController::class, 'markAsRead'])->name('user.notifications.read');
         Route::post('/notifications/mark-as-read', [UserNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+        Route::delete('/notifications/delete-all', [UserNotificationController::class, 'deleteAll'])->name('notifications.deleteAll');
     });
 });
 

@@ -6,6 +6,7 @@
     <title>@yield('title')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
 
     {{-- QR Scan --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -96,39 +97,35 @@
             <span class="ml-2 text-xl font-semibold">Admin Dashboard</span>
         </div>
         <div class="relative group">
-            <!-- Notification Button -->
-            <button id="notificationToggle" class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none" aria-label="Notifications">
+            <!-- Tombol Notifikasi -->
+            <button id="admin-notification-toggle" class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none">
                 <i class="bi bi-bell text-2xl"></i>
-                @if(Auth::user()->unreadNotifications->count() > 0)
-                    <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-1">
+                @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                    <span class="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 ml-1">
                         {{ Auth::user()->unreadNotifications->count() }}
                     </span>
                 @endif
             </button>
 
-            <!-- Notification Dropdown -->
-            <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg hidden z-50">
-                <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200">Notifications</div>
-                <ul id="notificationList" class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+            <!-- Dropdown Notifikasi -->
+            <div id="admin-notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg hidden z-50">
+                <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200 flex justify-between items-center">
+                    <span>Notifikasi</span>
+                    <button id="delete-all-notifications-admin" class="text-red-600 hover:underline text-sm">Hapus Semua</button>
+                </div>
+                <ul id="admin-notification-list" class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
                     @forelse(Auth::user()->unreadNotifications as $notification)
                         <li class="px-4 py-2 flex justify-between items-center">
                             <div>
                                 <p class="text-sm text-gray-800">{{ $notification->data['message'] }}</p>
                                 <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <!-- Mark as Read Button -->
-                                <button class="text-blue-600 hover:underline mark-as-read" data-id="{{ $notification->id }}">
-                                    Mark as Read
-                                </button>
-                                <!-- Delete Button -->
-                                <button class="text-red-600 hover:underline delete-notification" data-id="{{ $notification->id }}">
-                                    Delete
-                                </button>
-                            </div>
+                            <button class="text-blue-600 hover:underline mark-as-read-admin" data-id="{{ $notification->id }}">
+                                Tandai
+                            </button>
                         </li>
                     @empty
-                        <li class="px-4 py-2 text-gray-500 text-center">No new notifications</li>
+                        <li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>
                     @endforelse
                 </ul>
             </div>
@@ -162,6 +159,23 @@
       @yield('content')
     </main>
 
+    <div id="global-notifications" class="fixed top-5 right-5 z-50 space-y-2"></div>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showNotification('success', "{{ session('success') }}");
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showNotification('danger', "{{ session('error') }}");
+            });
+        </script>
+    @endif
 
     <!-- Toggle Script -->
     <script>
@@ -183,58 +197,56 @@
     </script>
 
     <script>
-        const notificationToggle = document.getElementById('notificationToggle');
-        const notificationDropdown = document.getElementById('notificationDropdown');
+        document.addEventListener('DOMContentLoaded', function () {
+            const notificationToggle = document.getElementById('admin-notification-toggle');
+            const notificationDropdown = document.getElementById('admin-notification-dropdown');
 
-        // Toggle visibility of the notification dropdown
-        notificationToggle.addEventListener('click', () => {
-            notificationDropdown.classList.toggle('hidden');
-        });
+            // Toggle visibility of the notification dropdown
+            notificationToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                notificationDropdown.classList.toggle('hidden');
+            });
 
-        // Close the dropdown if clicked outside
-        document.addEventListener('click', (event) => {
-            if (!notificationToggle.contains(event.target) && !notificationDropdown.contains(event.target)) {
-                notificationDropdown.classList.add('hidden');
-            }
-        });
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!notificationToggle.contains(event.target) && !notificationDropdown.contains(event.target)) {
+                    notificationDropdown.classList.add('hidden');
+                }
+            });
 
-        // Mark notifications as read
-        document.querySelectorAll('.mark-as-read').forEach(button => {
-            button.addEventListener('click', function () {
-                const notificationId = this.dataset.id;
+            // Tandai notifikasi sebagai sudah dibaca
+            document.querySelectorAll('.mark-as-read-admin').forEach(button => {
+                button.addEventListener('click', function () {
+                    const notificationId = this.dataset.id;
 
-                fetch('{{ route('admin.notifications.read') }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: notificationId }),
-                }).then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        this.closest('li').remove();
-                    }
+                    fetch('{{ route('admin.notifications.read') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: notificationId }),
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.closest('li').remove();
+                        }
+                    });
                 });
             });
-        });
 
-        // Delete notifications
-        document.querySelectorAll('.delete-notification').forEach(button => {
-            button.addEventListener('click', function () {
-                const notificationId = this.dataset.id;
-
-                fetch('{{ route('admin.notifications.delete') }}', {
+            // Hapus semua notifikasi
+            document.getElementById('delete-all-notifications-admin').addEventListener('click', function () {
+                fetch('{{ route('admin.notifications.deleteAll') }}', {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ id: notificationId }),
                 }).then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        this.closest('li').remove();
+                        document.getElementById('admin-notification-list').innerHTML = '<li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>';
                     }
                 });
             });
@@ -257,6 +269,34 @@
                 if (!profileDropdown.contains(e.target) && !profileToggle.contains(e.target)) {
                     profileDropdown.classList.add('hidden');
                 }
+            });
+        });
+
+        function showNotification(type, message) {
+            const notificationContainer = document.getElementById('global-notifications');
+            if (!notificationContainer) {
+                console.error('Notification container not found!');
+                return;
+            }
+
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `<span>${message}</span>`;
+            notificationContainer.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => notification.remove(), 500); // Hapus setelah transisi selesai
+            }, 3000); // Tampilkan selama 3 detik
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    setTimeout(() => notification.remove(), 500); // Hapus setelah transisi selesai
+                }, 3000); // Tampilkan selama 3 detik
             });
         });
     </script>

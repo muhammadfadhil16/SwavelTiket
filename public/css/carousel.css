@@ -1,0 +1,22 @@
+/* Carousel Styles */
+#carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    flex: 0 0 50% ; /* Setiap item mengambil 100% lebar */
+}
+
+.indicator-dot {
+    height: 12px;
+    width: 12px;
+    background-color: #d1d5db; /* Gray-400 */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.indicator-dot.bg-blue-500 {
+    background-color: #3b82f6; /* Blue-500 */
+}

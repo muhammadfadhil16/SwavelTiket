@@ -6,10 +6,22 @@
 <!-- Carousel -->
 <div class="relative w-full overflow-hidden">
     <div id="carousel" class="flex transition-transform duration-500 ease-in-out">
-        <img src="{{ asset('images/user/1.jpg') }}" alt="Carousel 1"
-            class="h-64 md:h-96 w-full object-cover">
-        <img src="{{ asset('images/user/2.jpg') }}" alt="Carousel 2"
-            class="h-64 md:h-96 w-full object-cover">
+        <div class="carousel-item w-full">
+            <img src="{{ asset('images/user/Carousell4.jpeg') }}" alt="Carousel 1"
+                class="h-64 md:h-96 w-full object-cover">
+        </div>
+        <div class="carousel-item w-full">
+            <img src="{{ asset('images/user/Carousell3.jpeg') }}" alt="Carousel 2"
+                class="h-64 md:h-96 w-full object-cover">
+        </div>
+        <div class="carousel-item w-full">
+            <img src="{{ asset('images/user/Carousell6.jpeg') }}" alt="Carousel 3"
+                class="h-64 md:h-96 w-full object-cover">
+        </div>
+        <div class="carousel-item w-full">
+            <img src="{{ asset('images/user/Carousell5.jpeg') }}" alt="Carousel 4"
+                class="h-64 md:h-96 w-full object-cover">
+        </div>
     </div>
 
     <!-- Previous Button -->
@@ -28,6 +40,8 @@
     <div id="carouselIndicators" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
         <span data-index="0" class="indicator-dot h-3 w-3 rounded-full bg-gray-400 cursor-pointer"></span>
         <span data-index="1" class="indicator-dot h-3 w-3 rounded-full bg-gray-400 cursor-pointer"></span>
+        <span data-index="2" class="indicator-dot h-3 w-3 rounded-full bg-gray-400 cursor-pointer"></span>
+        <span data-index="3" class="indicator-dot h-3 w-3 rounded-full bg-gray-400 cursor-pointer"></span>
     </div>
 </div>
 
@@ -112,40 +126,71 @@
 
 @push('scripts')
 <script>
-    const carousel = document.getElementById('carousel');
-    const slides = carousel.children;
-    const dots = document.querySelectorAll('.indicator-dot');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+    document.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('carousel');
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.indicator-dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-    let currentIndex = 0;
+        let currentIndex = 0;
+        const slideInterval = 5000; // 5 detik
+        let autoplay;
 
-    const update = () => {
-        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('bg-blue-500', index === currentIndex);
-            dot.classList.toggle('bg-gray-400', index !== currentIndex);
-        });
-    };
+        const update = () => {
+            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('bg-blue-500', index === currentIndex);
+                dot.classList.toggle('bg-gray-400', index !== currentIndex);
+            });
+        };
 
-    prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
-        update();
-    });
-
-    nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
-        update();
-    });
-
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentIndex = index;
+        const nextSlide = () => {
+            currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
+            console.log('Next Slide:', currentIndex);
             update();
-        });
-    });
+        };
 
-    update();
+        const prevSlide = () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
+            console.log('Previous Slide:', currentIndex);
+            update();
+        };
+
+        const startAutoplay = () => {
+            autoplay = setInterval(nextSlide, slideInterval);
+            console.log('Autoplay started');
+        };
+
+        const stopAutoplay = () => {
+            clearInterval(autoplay);
+        };
+
+        prevBtn.addEventListener('click', () => {
+            stopAutoplay();
+            prevSlide();
+            startAutoplay();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            stopAutoplay();
+            nextSlide();
+            startAutoplay();
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                stopAutoplay();
+                currentIndex = index;
+                update();
+                startAutoplay();
+            });
+        });
+
+        // Start autoplay on page load
+        startAutoplay();
+        update();
+    });
 </script>
 @endpush
 @endsection

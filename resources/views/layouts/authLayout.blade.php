@@ -12,7 +12,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.classList.add('hide');
+                }, 2000); // Hilang setelah 2 detik
+            });
+        });
+    </script>
 </head>
 <body class="bg-login min-h-screen flex flex-col items-center justify-center"></body>
     <!-- Notifikasi -->
@@ -43,7 +54,7 @@
             function showNotification(message, type) {
                 notification.textContent = message;
                 notification.classList.remove('hidden');
-                notification.style.transition = 'all 0.5s ease';
+                notification.style.transition = 'all 5s ease';
 
                 if (type === 'success') {
                     notification.style.backgroundColor = '#4caf50'; // Hijau untuk sukses

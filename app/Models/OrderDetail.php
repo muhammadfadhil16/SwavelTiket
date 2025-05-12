@@ -20,6 +20,12 @@ class OrderDetail extends Model
         'id_order',
         'id_ticket',
         'qr_code',
+        'is_validated',
+    ];
+
+    protected $attributes = [
+        'qr_code' => null,
+        'is_validated' => false,
     ];
 
     // Relasi ke tabel Ticket

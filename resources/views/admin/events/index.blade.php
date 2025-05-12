@@ -38,6 +38,16 @@
                 <option value="Ongoing" {{ request()->get('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
                 <option value="Done" {{ request()->get('status') == 'Done' ? 'selected' : '' }}>Done</option>
             </select>
+            
+            <!-- Filter by Category -->
+            <select name="category" class="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Categories</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->category }}" {{ request()->get('category') == $category->category ? 'selected' : '' }}>
+                        {{ $category->category }}
+                    </option>
+                @endforeach
+            </select>
 
             <!-- Filter by Location -->
             <input type="text" name="location" class="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Filter by location" value="{{ request()->get('location') }}">
@@ -45,6 +55,8 @@
             <button type="submit" class="px-4 py-2  bg-slate-800 text-white rounded-md hover:bg-slate-700 ">
                 <i class="bi bi-search"></i> Search
             </button>
+
+
         </form>
 
         <!-- Export Button -->
@@ -63,6 +75,9 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Event
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Kategori
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Tanggal
@@ -93,6 +108,9 @@
                         </td>
                         <td class="px-6 py-4">
                             {{ $event->name }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $event->category }}
                         </td>
                         <td class="px-6 py-4">
                             {{ $event->date }}

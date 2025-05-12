@@ -56,27 +56,10 @@ class NotificationController extends Controller
     /**
      * Menghapus notifikasi.
      */
-    public function delete(Request $request)
+    public function deleteAll(Request $request)
     {
-        // Pastikan hanya admin yang dapat mengakses
-        $admin = Auth::user();
-        if (!$admin->isAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+        auth()->user()->notifications()->delete();
 
-        // Validasi request
-        $request->validate([
-            'id' => 'required|exists:notifications,id',
-        ]);
-
-        // Cari notifikasi berdasarkan ID
-        $notification = $admin->notifications()->find($request->id);
-
-        if ($notification) {
-            $notification->delete();
-            return response()->json(['success' => true, 'message' => 'Notification deleted successfully.']);
-        }
-
-        return response()->json(['success' => false, 'message' => 'Notification not found.'], 404);
+        return response()->json(['success' => true, 'message' => 'Semua notifikasi berhasil dihapus.']);
     }
 }

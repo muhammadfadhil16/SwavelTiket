@@ -18,6 +18,7 @@ class EventController extends Controller
         $search = $request->get('search');
         $status = $request->get('status');
         $location = $request->get('location');
+        $category = $request->get('category');
 
         $events = Event::when($search, function ($query, $search) {
                 return $query->where('name', 'like', '%' . $search . '%')
@@ -29,9 +30,16 @@ class EventController extends Controller
             ->when($location, function ($query, $location) {
                 return $query->where('location', 'like', '%' . $location . '%');
             })
+            ->when($category, function ($query, $category) {
+                return $query->where('category', $category);
+            })
             ->paginate(10);
 
-        return view('admin.events.index', compact('events'));
+        // Ambil semua kategori unik dari tabel Event
+        $categories = Event::select('category')->distinct()->get();
+
+        // Kirim variabel $categories ke view
+        return view('admin.events.index', compact('events', 'categories'));
     }
 
     /**

@@ -3,7 +3,7 @@
 @section('title', $event->name)
 
 @section('content')
-<div class="container">
+<div class="container mx-auto">
     <section class="shadow-lg p-2 rounded-lg bg-white">
         <img src="{{ asset('storage/' . $event->image) }}" alt="img-card" class="w-full h-[30vh] rounded-lg object-cover" />
         <div class="mt-2 border-b-2 py-2">

@@ -14,6 +14,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/carousel.css') }}">
 </head>
 
 <body class="min-h-screen flex flex-col bg-gray-100">
@@ -80,26 +82,29 @@
               </button>
               <div id="desktop-notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg hidden z-50">
                 @if(Auth::check())
-                  <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200">Notifikasi</div>
-                  <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
-                    @forelse(Auth::user()->unreadNotifications as $notification)
-                      <li class="px-4 py-2">
-                        <div class="flex justify-between items-start">
-                          <div>
-                            <p class="text-sm">{{ $notification->data['message'] ?? 'No message available' }}</p>
-                            <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
-                          </div>
-                          <button class="text-blue-600 hover:underline mark-as-read" data-id="{{ $notification->id }}">
-                            Tandai
-                          </button>
-                        </div>
-                      </li>
-                    @empty
-                      <li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>
-                    @endforelse
-                  </ul>
+                    <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200 flex justify-between items-center">
+                        <span>Notifikasi</span>
+                        <button id="delete-all-notifications" class="text-red-600 hover:underline text-sm">Hapus Semua</button>
+                    </div>
+                    <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
+                        @forelse(Auth::user()->unreadNotifications as $notification)
+                            <li class="px-4 py-2">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm">{{ $notification->data['message'] ?? 'No message available' }}</p>
+                                        <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    <button class="text-blue-600 hover:underline mark-as-read" data-id="{{ $notification->id }}">
+                                        Tandai
+                                    </button>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>
+                        @endforelse
+                    </ul>
                 @else
-                  <div class="px-4 py-2 text-gray-500 text-center">Silakan login untuk melihat notifikasi</div>
+                    <div class="px-4 py-2 text-gray-500 text-center">Silakan login untuk melihat notifikasi</div>
                 @endif
               </div>
             </div>
@@ -126,7 +131,10 @@
         </a>
         <div id="mobile-notification-dropdown" class="hidden mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
           @if(Auth::check())
-            <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200">Notifikasi</div>
+            <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200 flex justify-between items-center">
+              <span>Notifikasi</span>
+              <button id="delete-all-notifications-mobile" class="text-red-600 hover:underline text-sm">Hapus Semua</button>
+            </div>
             <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
               @forelse(Auth::user()->unreadNotifications as $notification)
                 <li class="px-4 py-2">
@@ -164,6 +172,25 @@
       </nav>
     </div>
   </header>
+
+  {{-- Notifikasi --}}
+  @if (session('success'))
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              showNotification('success', "{{ session('success') }}");
+          });
+      </script>
+  @endif
+
+  @if (session('error'))
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              showNotification('danger', "{{ session('error') }}");
+          });
+      </script>
+  @endif
+
+  <div id="global-notifications" class="fixed top-5 right-5 z-50 space-y-2"></div>
 
   {{-- Main Content --}}
   <main class="flex-grow pt-20">
@@ -275,6 +302,115 @@
         }
       });
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const notifications = document.querySelectorAll('.notification');
+      notifications.forEach(notification => {
+        setTimeout(() => {
+          notification.classList.add('hide');
+        }, 5000); // Hilang setelah 2 detik
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Tandai notifikasi sebagai sudah dibaca
+        document.querySelectorAll('.mark-as-read').forEach(button => {
+            button.addEventListener('click', function () {
+                const notificationId = this.dataset.id;
+
+                fetch('{{ route('notifications.markAsRead') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ id: notificationId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.closest('li').remove();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Hapus semua notifikasi untuk desktop
+        const deleteAllButtonDesktop = document.getElementById('delete-all-notifications');
+        if (deleteAllButtonDesktop) { // Pastikan elemen ada
+            deleteAllButtonDesktop.addEventListener('click', function () {
+                if (confirm('Apakah Anda yakin ingin menghapus semua notifikasi?')) {
+                    fetch('{{ route('notifications.deleteAll') }}', {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelectorAll('#desktop-notification-dropdown ul li').forEach(li => li.remove());
+                            alert(data.message);
+                        } else {
+                            alert('Gagal menghapus notifikasi.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        }
+
+        // Hapus semua notifikasi untuk mobile
+        const deleteAllButtonMobile = document.getElementById('delete-all-notifications-mobile');
+        if (deleteAllButtonMobile) { // Pastikan elemen ada
+            deleteAllButtonMobile.addEventListener('click', function () {
+                if (confirm('Apakah Anda yakin ingin menghapus semua notifikasi?')) {
+                    fetch('{{ route('notifications.deleteAll') }}', {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelectorAll('#mobile-notification-dropdown ul li').forEach(li => li.remove());
+                            alert(data.message);
+                        } else {
+                            alert('Gagal menghapus notifikasi.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            });
+        }
+    });
+
+    function showNotification(type, message) {
+        const notificationContainer = document.getElementById('global-notifications');
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `<span>${message}</span>`;
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 500); // Hapus setelah transisi selesai
+        }, 3000); // Tampilkan selama 3 detik
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => notification.remove(), 500); // Hapus setelah transisi selesai
+            }, 3000); // Tampilkan selama 3 detik
+        });
+    });
   </script>
 </body>
 
