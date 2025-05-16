@@ -118,7 +118,6 @@ class TicketsController extends Controller
      */
     public function destroy($id)
     {
-        // delete
         $ticket = Tickets::findOrFail($id);
         $ticket->delete();
 

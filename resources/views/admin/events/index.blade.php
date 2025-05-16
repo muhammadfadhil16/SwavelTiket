@@ -53,7 +53,7 @@
             <input type="text" name="location" class="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Filter by location" value="{{ request()->get('location') }}">
 
             <button type="submit" class="px-4 py-2  bg-slate-800 text-white rounded-md hover:bg-slate-700 ">
-                <i class="bi bi-search"></i> Search
+                <i class="bi bi-search"></i> Cari
             </button>
 
 
@@ -61,7 +61,7 @@
 
         <!-- Export Button -->
         <a href="{{ route('admin.events.export') }}" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-            <i class="bi bi-download"></i> Export Events
+            <i class="bi bi-download"></i> Ekspor Events
         </a>
     </div>
 
@@ -95,7 +95,7 @@
                         Tiket
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        WhatsApp Group
+                        Grub WhatsApp 
                     </th>
                 </tr>
             </thead>
@@ -142,23 +142,23 @@
                                     data-capacity="{{ $event->capacity }}"
                                     data-status="{{ $event->status }}"
                                     data-category="{{ $event->category }}">
-                                    View
+                                    Lihat
                                 </button>
 
                                 <!-- Edit Button -->
-                                <a href="{{ route('events.edit', $event->id_event) }}" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Edit</a>
+                                <a href="{{ route('events.edit', $event->id_event) }}" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Ubah</a>
 
                                 <!-- Delete Button -->
                                 <form action="{{ route('events.destroy', $event->id_event) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete the event {{ $event->name }}?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
                                 </form>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex flex-wrap justify-center gap-2">
-                                <a href="{{ route('tickets.create', $event->id_event) }}" class="px-2 py-1 bg-green-600 text-white rounded-md hover:bg-green-700">Create Ticket</a>
+                                <a href="{{ route('tickets.create', $event->id_event) }}" class="px-2 py-1 bg-green-600 text-white rounded-md hover:bg-green-700">Buat Tiket</a>
                                 <a href="{{ route('tickets.index', ['event' => $event->id_event]) }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                                     Lihat Tiket
                                 </a>
@@ -170,14 +170,14 @@
                                 Join Group
                             </a>
                             @else
-                            <span class="text-gray-500">No Link</span>
+                            <span class="text-gray-500">Tidak Ada Link</span>
                             @endif
                         </td>
                     </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">No events found matching your search.</td>
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">Tidak ada event yang ditemukan</td>
                     </tr>
                 @endif
             </tbody>
