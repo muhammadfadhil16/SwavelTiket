@@ -5,18 +5,6 @@
     <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Buat Tiket Baru</h1>
 
-        <!-- Alert Messages -->
-        @if (session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-            {{ session('error') }}
-        </div>
-        @endif
-
-        @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-            {{ session('success') }}
-        </div>
-        @endif
 
         <form action="{{ route('tickets.store') }}" method="POST">
             @csrf

@@ -6,7 +6,7 @@
 <div class="flex h-screen bg-gray-100">
     <div class="m-auto w-full max-w-4xl">
         <div class="bg-white rounded-lg shadow p-6">
-            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Edit Event</h1>
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Ubah Event</h1>
 
             <!-- Form Edit Event -->
             <form action="{{ route('events.update', $event->id_event) }}" method="POST" enctype="multipart/form-data">

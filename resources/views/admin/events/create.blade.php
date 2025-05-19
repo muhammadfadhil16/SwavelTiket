@@ -6,7 +6,7 @@
 <div class="flex h-screen bg-gray-100">
     <div class="m-auto w-full max-w-4xl">
         <div class="bg-white rounded-lg shadow p-6">
-            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Event</h1>
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Pembuatan Tiket</h1>
 
             <!-- Form Pembuatan Event -->
             <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
@@ -16,7 +16,7 @@
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Event Name</label>
                     <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Enter event name"
-                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('name') border-red-500 @enderror" required>
+                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('name') @enderror" required>
                     @error('name')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -26,7 +26,7 @@
                 <div class="mb-4">
                     <label for="date" class="block text-sm font-medium text-gray-700">Event Date</label>
                     <input type="date" id="date" name="date" value="{{ old('date') }}" min="{{ date('Y-m-d') }}"
-                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('date') border-red-500 @enderror" required>
+                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('date') @enderror" required>
                     @error('date')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -37,7 +37,7 @@
                     <div>
                         <label for="start_time" class="block text-sm font-medium text-gray-700">Start Time</label>
                         <input type="time" id="start_time" name="start_time" value="{{ old('start_time') }}"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('start_time') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('start_time') @enderror" required>
                         @error('start_time')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -46,7 +46,7 @@
                     <div>
                         <label for="end_time" class="block text-sm font-medium text-gray-700">End Time</label>
                         <input type="time" id="end_time" name="end_time" value="{{ old('end_time') }}"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('end_time') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('end_time') @enderror" required>
                         @error('end_time')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -57,7 +57,7 @@
                 <div class="mt-4">
                     <label for="image" class="block text-sm font-medium text-gray-700">Event Image</label>
                     <input type="file" id="image" name="image"
-                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('image') border-red-500 @enderror" required>
+                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('image') @enderror" required>
                     @error('image')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -68,7 +68,7 @@
                     <div>
                         <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
                         <select id="location" name="location"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('location') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('location') @enderror" required>
                             <option value="" selected disabled>-- Select City --</option>
                             @foreach($cities as $city)
                                 <option value="{{ $city->name }}">{{ $city->name }}</option>
@@ -82,7 +82,7 @@
                     <div>
                         <label for="venue" class="block text-sm font-medium text-gray-700">Venue</label>
                         <input type="text" id="venue" name="venue" value="{{ old('venue') }}" placeholder="Enter event venue"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('venue') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('venue') @enderror" required>
                         @error('venue')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -93,7 +93,7 @@
                 <div class="mt-4">
                     <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="description" name="description" rows="3" placeholder="Enter event description (optional)"
-                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
+                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('description') @enderror">{{ old('description') }}</textarea>
                     @error('description')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -103,7 +103,7 @@
                 <div class="mt-4">
                     <label for="whatsapp_group_link" class="block text-sm font-medium text-gray-700">WhatsApp Group Link</label>
                     <input type="url" id="whatsapp_group_link" name="whatsapp_group_link" value="{{ old('whatsapp_group_link') }}" placeholder="Enter WhatsApp group link"
-                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('whatsapp_group_link') border-red-500 @enderror">
+                        class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('whatsapp_group_link') @enderror">
                     @error('whatsapp_group_link')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -114,7 +114,7 @@
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
                         <select id="category" name="category"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('category') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('category') @enderror" required>
                             <option value="" selected disabled>Select category</option>
                             <option value="Music" {{ old('category') == 'Music' ? 'selected' : '' }}>Music</option>
                             <option value="Sport" {{ old('category') == 'Sport' ? 'selected' : '' }}>Sport</option>
@@ -129,7 +129,7 @@
                     <div>
                         <label for="capacity" class="block text-sm font-medium text-gray-700">Capacity</label>
                         <input type="number" id="capacity" name="capacity" value="{{ old('capacity') }}" placeholder="Enter event capacity" min="1"
-                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('capacity') border-red-500 @enderror" required>
+                            class="w-full px-4 py-2.5 mt-2 text-base border border-gray-300 rounded-lg bg-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400 @error('capacity') @enderror" required>
                         @error('capacity')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -150,7 +150,7 @@
                                 </g>
                             </g>
                         </svg>
-                        <span class="pl-2 mx-1">Create Event</span>
+                        <span class="pl-2 mx-1">Buat Event</span>
                     </button>
                 </div>
             </form>

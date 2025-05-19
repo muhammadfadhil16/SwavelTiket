@@ -14,16 +14,6 @@
         <h5 class="mt-2 text-2xl font-bold">Hi, {{ $user->name_user }}</h5>
       </div>
 
-      <!-- Flash Message -->
-      @if(session('success'))
-      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong class="font-bold">Success!</strong>
-        <span class="block sm:inline">{{ session('success') }}</span>
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-          <i class="bi bi-x text-green-700"></i>
-        </button>
-      </div>
-      @endif
 
       <!-- Form untuk Mengubah Nama -->
       <form method="POST" action="{{ route('user.settings.update') }}">

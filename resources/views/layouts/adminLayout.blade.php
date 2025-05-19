@@ -177,6 +177,17 @@
         </script>
     @endif
 
+    @if (session('status') && session('message'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showNotification(
+                    "{{ session('status') === 'error' ? 'danger' : session('status') }}",
+                    "{{ session('message') }}"
+                );
+            });
+        </script>
+    @endif
+
     <!-- Toggle Script -->
     <script>
         const btn = document.getElementById('sidebarToggle')

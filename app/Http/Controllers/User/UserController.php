@@ -95,6 +95,6 @@ class UserController extends Controller
             'name_user' => $request->name_user,
         ]);
 
-        return redirect()->route('user.settings')->with('success', 'Name updated successfully.');
+        return redirect()->route('user.settings')->with('success', 'Profil berhasil diperbarui');
     }
 }

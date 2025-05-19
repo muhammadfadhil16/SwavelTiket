@@ -11,17 +11,6 @@
             <div class="flex h-full flex-col justify-center gap-4 p-6">
                 <div class="left-0 right-0 inline-block border-gray-200 px-2 py-2.5 sm:px-4">
 
-                    <!-- Notifikasi -->
-                    @if (session('error'))
-                        <div class="notification error">
-                            {{ session('error') }}
-                        </div>
-                    @elseif (session('success'))
-                        <div class="notification success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-4 pb-4">
                         @csrf
                         <h1 class="mb-4 text-2xl font-bold dark:text-white">Login</h1>

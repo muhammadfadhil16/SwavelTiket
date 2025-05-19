@@ -175,19 +175,30 @@
 
   {{-- Notifikasi --}}
   @if (session('success'))
-      <script>
-          document.addEventListener('DOMContentLoaded', function () {
-              showNotification('success', "{{ session('success') }}");
-          });
-      </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showNotification('success', "{{ session('success') }}");
+        });
+    </script>
   @endif
 
   @if (session('error'))
-      <script>
-          document.addEventListener('DOMContentLoaded', function () {
-              showNotification('danger', "{{ session('error') }}");
-          });
-      </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showNotification('danger', "{{ session('error') }}");
+        });
+    </script>
+  @endif
+
+  @if (session('status') && session('message'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showNotification(
+                "{{ session('status') === 'error' ? 'danger' : session('status') }}",
+                "{{ session('message') }}"
+            );
+        });
+    </script>
   @endif
 
   <div id="global-notifications" class="fixed top-5 right-5 z-50 space-y-2"></div>

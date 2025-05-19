@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mx-auto mt-8 px-4 sm:px-2">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6 sm:text-xl">Ticket Validation</h1>
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6 sm:text-xl">Validasi Tiket</h1>
 
     <!-- Alert Messages -->
     @if (session('status') === 'qr.success')

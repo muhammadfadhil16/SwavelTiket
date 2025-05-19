@@ -4,26 +4,7 @@
 
 @section('content')
 <div class="container mx-auto mt-8 px-4">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">List Events</h1>
-
-    <!-- Alerts -->
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Success!</strong> {{ session('success') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-green-700"></i>
-        </button>
-    </div>
-    @endif
-
-    @if(session('danger'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Error!</strong> {{ session('danger') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-red-700"></i>
-        </button>
-    </div>
-    @endif
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Daftar Events</h1>
 
     {{-- search and filter --}}
     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -149,11 +130,11 @@
                                 <a href="{{ route('events.edit', $event->id_event) }}" class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Ubah</a>
 
                                 <!-- Delete Button -->
-                                <form action="{{ route('events.destroy', $event->id_event) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete the event {{ $event->name }}?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
-                                </form>
+                                <button type="button"
+                                    class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                    onclick="openDeleteModal({{ $event->id_event }}, '{{ $event->name }}')">
+                                    Hapus
+                                </button>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-center">
@@ -191,7 +172,7 @@
 </div>
 
 <!-- Enhanced Responsive Modal -->
-<div id="eventDetailModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 hidden transition-opacity duration-300 ease-in-out" aria-hidden="true" role="dialog" aria-labelledby="modal-event-name" aria-describedby="modal-description">
+<div id="eventDetailModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 transition-opacity duration-300 ease-in-out" aria-hidden="true" role="dialog" aria-labelledby="modal-event-name" aria-describedby="modal-description">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-full sm:max-w-md md:max-w-lg mx-4 overflow-hidden transform scale-95 transition-transform duration-300 ease-in-out">
         <!-- Header -->
         <div class="bg-gradient-to-r from-blue-600 to-teal-500 px-6 py-4 flex justify-between items-center">
@@ -223,6 +204,20 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi Hapus Event -->
+<div id="deleteEventModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <form id="deleteEventForm" method="POST" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        @csrf
+        @method('DELETE')
+        <h3 class="text-lg font-semibold mb-4">Konfirmasi Hapus Event</h3>
+        <p class="mb-3">Apakah Anda yakin ingin menghapus event <span id="deleteEventName" class="font-bold"></span>?</p>
+        <div class="flex justify-end space-x-2">
+            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Batal</button>
+            <button type="submit" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Hapus</button>
+        </div>
+    </form>
+</div>
+
 <script>
     function openModal(button) {
         const modal = document.getElementById('eventDetailModal');
@@ -247,6 +242,16 @@
         modal.classList.add('hidden');
         modal.classList.remove('opacity-100', 'scale-100');
         modal.style.display = '';
+    }
+
+    function openDeleteModal(eventId, eventName) {
+        document.getElementById('deleteEventModal').classList.remove('hidden');
+        document.getElementById('deleteEventName').textContent = eventName;
+        // Set action form
+        document.getElementById('deleteEventForm').action = "{{ route('events.destroy', 'EVENT_ID') }}".replace('EVENT_ID', eventId);
+    }
+    function closeDeleteModal() {
+        document.getElementById('deleteEventModal').classList.add('hidden');
     }
 
     // Close modal when clicking outside

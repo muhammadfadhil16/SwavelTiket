@@ -37,24 +37,22 @@ class AuthController extends Controller
 
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
-
-            // Kirim notifikasi login
             $user->notify(new LoginNotification($user->name_user, now()->toDateTimeString()));
 
-            // Redirect berdasarkan role
             if ($user->role === 'Admin') {
-                return redirect()->route('admin.dashboard')->with('success', 'Berhasil login sebagai Admin!');
+                return redirect()->route('admin.dashboard')
+                    ->with(['status' => 'success', 'message' => 'Berhasil login sebagai Admin!']);
             }
-
             if ($user->role === 'User') {
-                return redirect()->route('catalogue.index')->with('success', 'Berhasil login sebagai User!');
+                return redirect()->route('catalogue.index')
+                    ->with(['status' => 'success', 'message' => 'Berhasil login sebagai User!']);
             }
-
-            // Default redirect jika role tidak dikenali
-            return redirect()->route('catalogue.index')->with('success', 'Berhasil login!');
+            return redirect()->route('catalogue.index')
+                ->with(['status' => 'success', 'message' => 'Berhasil login!']);
         }
 
-        return back()->with('error', 'Email atau password salah.');
+        // Jika gagal
+        return back()->with(['status' => 'error', 'message' => 'Email atau password salah']);
     }
 
     public function redirectUserByRole($route)

@@ -4,26 +4,8 @@
 
 @section('content')
 <div class="container mx-auto mt-8 px-4">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">User Management</h1>
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Manajemen User</h1>
 
-    <!-- Alerts -->
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Success!</strong> {{ session('success') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-green-700"></i>
-        </button>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Error!</strong> {{ session('error') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-red-700"></i>
-        </button>
-    </div>
-    @endif
 
     <!-- Search and Filter -->
     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -39,7 +21,7 @@
             </select>
 
             <button type="submit" class="px-4 py-2  bg-slate-800 text-white rounded-md hover:bg-slate-700">
-                <i class="bi bi-search"></i> Search
+                <i class="bi bi-search"></i> Cari
             </button>
         </form>
     </div>
@@ -71,10 +53,10 @@
                         <td class="px-6 py-4 text-center">
                             <div class="flex flex-wrap justify-center gap-2">
                                 <!-- Edit Button -->
-                                <button class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600" onclick="openModal('editModal{{ $user->id }}')">Edit</button>
+                                <button class="px-2 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600" onclick="openModal('editModal{{ $user->id }}')">Ubah</button>
 
                                 <!-- Delete Button -->
-                                <button class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700" onclick="openModal('deleteModal{{ $user->id }}')">Delete</button>
+                                <button class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700" onclick="openModal('deleteModal{{ $user->id }}')">Hapus</button>
                             </div>
                         </td>
                     </tr>
@@ -111,8 +93,8 @@
                                         </select>
                                     </div>
                                     <div class="flex justify-end gap-2">
-                                        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onclick="closeModal('editModal{{ $user->id }}')">Close</button>
-                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Changes</button>
+                                        <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onclick="closeModal('editModal{{ $user->id }}')">Tutup</button>
+                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Simpan Perubahan</button>
                                     </div>
                                 </form>
                             </div>
@@ -132,13 +114,13 @@
 
                             <!-- Modal Body -->
                             <div class="p-6">
-                                <p class="text-gray-700">Are you sure you want to delete this user?</p>
+                                <p class="text-gray-700">Apakah kamu yakin untuk menghapus user?</p>
                                 <div class="flex justify-end gap-2 mt-4">
                                     <button type="button" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700" onclick="closeModal('deleteModal{{ $user->id }}')">Cancel</button>
                                     <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+                                        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Hapus</button>
                                     </form>
                                 </div>
                             </div>

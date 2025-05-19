@@ -4,25 +4,8 @@
 
 @section ('content')
 <div class="container mx-auto mt-8 px-4">
-    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Orders Management</h1>
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Manajemen Order</h1>
 
-    <!-- Alerts -->
-    @if (session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Success!</strong> {{ session('success') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-green-700"></i>
-        </button>
-    </div>
-    @endif
-    @if (session('error'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong>Error!</strong> {{ session('error') }}
-        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none';">
-            <i class="bi bi-x text-red-700"></i>
-        </button>
-    </div>
-    @endif
 
     <!-- Search and Filter -->
     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -51,7 +34,7 @@
                 class="px-4 py-2  bg-slate-800 text-white rounded-md hover:bg-slate-700  flex items-center gap-2"
                 type="submit"
             >
-                <i class="bi bi-search"></i> Search
+                <i class="bi bi-search"></i> Cari
             </button>
         </form>
 

@@ -51,13 +51,13 @@
                                         <!-- Edit Button -->
                                         <a href="{{ route('tickets.edit', $ticket) }}"
                                             class="bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600 transition">
-                                            Edit
+                                            Ubah
                                         </a>
                                         <!-- Delete Button -->
                                         <button type="button"
                                             onclick="openModal('deleteModal', {{ $ticket->id_ticket }})"
                                             class="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 transition">
-                                            Delete
+                                            Hapus
                                         </button>
                                     </div>
                                 </td>
