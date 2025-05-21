@@ -119,11 +119,16 @@ class EventController extends Controller
     public function edit(string $id)
     {
         $event = Event::findOrFail($id);
-            // Cek jika status event adalah Done
         if ($event->status === 'Done') {
             return redirect()->route('events.index')->with('error', "Event {$event->name} sudah selesai dan tidak dapat diedit.");
         }
         $cities = City::all();
+
+        // Pisahkan lokasi dan venue jika perlu
+        $locationParts = explode(',', $event->location, 2);
+        $event->location = trim($locationParts[0]);
+        $event->venue = isset($locationParts[1]) ? trim($locationParts[1]) : '';
+
         return view('admin.events.edit', compact('event', 'cities'));
     }
 

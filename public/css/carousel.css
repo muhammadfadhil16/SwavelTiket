@@ -5,7 +5,7 @@
 }
 
 .carousel-item {
-    flex: 0 0 50% ; /* Setiap item mengambil 100% lebar */
+    flex: 0 0 100% ; /* Setiap item mengambil 100% lebar */
 }
 
 .indicator-dot {
@@ -19,4 +19,18 @@
 
 .indicator-dot.bg-blue-500 {
     background-color: #3b82f6; /* Blue-500 */
+}
+
+.carousel-item img {
+    max-height: 500px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+    .carousel-item img {
+        max-height: 400px;
+    }
 }

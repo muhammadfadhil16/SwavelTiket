@@ -71,6 +71,9 @@
         <div id="qr-reader-results" class="mt-3 text-center"></div>
         <div id="verification-status" class="mt-4 text-center"></div>
         <div id="validation-status" class="mt-4"></div>
+
+        <!-- Camera Selection Dropdown -->
+        <select id="camera-select" class="mb-3 px-2 py-1 border rounded"></select>
     </div>
 </div>
 
@@ -79,27 +82,22 @@
         const qrReader = new Html5Qrcode("qr-reader");
         let lastScanTime = 0; // Waktu terakhir pemindaian berhasil
         const scanInterval = 3000; 
+        let currentCameraId = null;
+        let cameras = [];
+
         // Fungsi untuk memulai scanner
-        function startScanner() {
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    const cameraId = devices[0].id; // Pilih kamera pertama
-                    qrReader.start(
-                        cameraId,
-                        { fps: 10, qrbox: { width: 250, height: 250 } },
-                        onScanSuccess,
-                        onScanFailure
-                    ).catch(error => {
-                        showNotification('danger', "Unable to access the camera. Please check your browser settings and permissions.");
-                        console.error("Error starting scanner:", error);
-                    });
-                } else {
-                    showNotification('danger', "No cameras available. Please check your device.");
-                }
-            }).catch(error => {
+        function startScanner(cameraId) {
+            qrReader.stop().catch(()=>{}); // Stop jika sudah ada scanner berjalan
+            qrReader.start(
+                cameraId,
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                onScanFailure
+            ).catch(error => {
                 showNotification('danger', "Unable to access the camera. Please check your browser settings and permissions.");
-                console.error("Error getting cameras:", error);
+                console.error("Error starting scanner:", error);
             });
+            currentCameraId = cameraId;
         }
 
         // Fungsi untuk menangani hasil scan QR code
@@ -171,8 +169,31 @@
             }, 3000); // Tampilkan selama 3 detik
         }
 
-        // Mulai scanner
-        startScanner();
+        // Fungsi untuk memperbarui daftar kamera
+        function updateCameraList() {
+            Html5Qrcode.getCameras().then(devices => {
+                cameras = devices;
+                const select = document.getElementById('camera-select');
+                select.innerHTML = '';
+                devices.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device.id;
+                    option.text = device.label || `Camera ${select.length + 1}`;
+                    select.appendChild(option);
+                });
+                if (devices.length) {
+                    startScanner(devices[0].id);
+                }
+                select.onchange = function() {
+                    startScanner(this.value);
+                };
+            }).catch(error => {
+                showNotification('danger', "No cameras available. Please check your device.");
+            });
+        }
+
+        // Perbarui daftar kamera saat halaman dimuat
+        updateCameraList();
     });
 </script>
 @endsection

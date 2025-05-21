@@ -34,12 +34,12 @@
           <a href="{{ route('catalogue.index') }}" class="text-gray-700 hover:text-blue-600">Beranda</a>
 
           {{-- Dropdown Event --}}
-          <div class="relative group">
-            <button class="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none">
+          <div class="relative">
+            <button id="eventDropdownToggle" type="button" class="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none">
               <span>Event</span>
               <i class="bx bx-chevron-down ml-1"></i>
             </button>
-            <div class="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+            <div id="eventDropdown" class="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden transition-opacity">
               <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Music','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Musik</a>
               <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Sport','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Olahraga</a>
               <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Seminar,Workshop','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Pendidikan</a>
@@ -117,58 +117,75 @@
       </div>
     </div>
 
-    {{-- Mobile Nav --}}
-    <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200">
-      <nav class="flex flex-col px-6 py-4 space-y-2">
-        <a href="{{ route('catalogue.index') }}" class="text-gray-700 hover:text-blue-600">Beranda</a>
-        <a href="#" id="mobile-notification-toggle" class="text-gray-700 hover:text-blue-600 flex items-center">
-          <i class="bi bi-bell text-lg mr-2"></i> Notifikasi
-          @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
-            <span class="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 ml-2">
-              {{ Auth::user()->unreadNotifications->count() }}
-            </span>
-          @endif
-        </a>
-        <div id="mobile-notification-dropdown" class="hidden mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
-          @if(Auth::check())
-            <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200 flex justify-between items-center">
-              <span>Notifikasi</span>
-              <button id="delete-all-notifications-mobile" class="text-red-600 hover:underline text-sm">Hapus Semua</button>
+
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200">
+          <nav class="flex flex-col px-6 py-4 space-y-2">
+            <a href="{{ route('catalogue.index') }}" class="text-gray-700 hover:text-blue-600">Beranda</a>
+            <a href="#" id="mobile-notification-toggle" class="text-gray-700 hover:text-blue-600 flex items-center">
+              <i class="bi bi-bell text-lg mr-2"></i> Notifikasi
+              @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                <span class="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 ml-2">
+                  {{ Auth::user()->unreadNotifications->count() }}
+                </span>
+              @endif
+            </a>
+            <div id="mobile-notification-dropdown" class="hidden mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
+              @if(Auth::check())
+                <div class="px-4 py-2 text-gray-700 font-bold border-b border-gray-200 flex justify-between items-center">
+                  <span>Notifikasi</span>
+                  <button id="delete-all-notifications-mobile" class="text-red-600 hover:underline text-sm">Hapus Semua</button>
+                </div>
+                <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
+                  @forelse(Auth::user()->unreadNotifications as $notification)
+                    <li class="px-4 py-2">
+                      <div class="flex justify-between items-start">
+                        <div>
+                          <p class="text-sm">{{ $notification->data['message'] ?? 'No message available' }}</p>
+                          <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
+                        </div>
+                        <button class="text-blue-600 hover:underline mark-as-read" data-id="{{ $notification->id }}">
+                          Tandai
+                        </button>
+                      </div>
+                    </li>
+                  @empty
+                    <li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>
+                  @endforelse
+                </ul>
+              @else
+                <div class="px-4 py-2 text-gray-500 text-center">Silakan login untuk melihat notifikasi</div>
+              @endif
             </div>
-            <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
-              @forelse(Auth::user()->unreadNotifications as $notification)
-                <li class="px-4 py-2">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <p class="text-sm">{{ $notification->data['message'] ?? 'No message available' }}</p>
-                      <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
-                    </div>
-                    <button class="text-blue-600 hover:underline mark-as-read" data-id="{{ $notification->id }}">
-                      Tandai
-                    </button>
-                  </div>
-                </li>
-              @empty
-                <li class="px-4 py-2 text-gray-500 text-center">Tidak ada notifikasi baru</li>
-              @endforelse
-            </ul>
-          @else
-            <div class="px-4 py-2 text-gray-500 text-center">Silakan login untuk melihat notifikasi</div>
-          @endif
+            <div class="relative">
+              <button id="mobileEventDropdownToggle" type="button" class="flex items-center justify-between w-full text-gray-700 hover:text-blue-600 focus:outline-none">
+                <span>Event</span>
+                <svg id="mobileEventChevron" class="ml-2 h-5 w-5 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div id="mobileEventDropdown" class="hidden z-50 mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
+                <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Music','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Musik</a>
+                <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Sport','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Olahraga</a>
+                <a href="{{ route('user.catalogue.showAllEvents', ['category'=>'Seminar,Workshop','search'=>request('search')]) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Acara Pendidikan</a>
+                <hr class="my-1" />
+                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">Lainnya</a>
+              </div>
+            </div>
+            <div class="border-t border-gray-200"></div>
+            <a href="https://wa.me/6285245464758" class="text-gray-700 hover:text-blue-600">Hubungi Kami</a>
+            @if(Auth::check())
+            <a href="{{ route('order.index') }}" class="text-gray-700 hover:text-blue-600">Tiketku</a>
+            <a href="{{ route('user.settings') }}" class="text-gray-700 hover:text-blue-600">Settings</a>
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="text-left text-gray-700 hover:text-blue-600">Logout</button>
+            </form>
+            @else
+            <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">LOGIN</a>
+            @endif
+          </nav>
         </div>
-        <div class="border-t border-gray-200"></div>
-        <a href="#" class="text-gray-700 hover:text-blue-600">Event</a>
-        <a href="https://wa.me/6285245464758" class="text-gray-700 hover:text-blue-600">Hubungi Kami</a>
-        @if(Auth::check())
-        <a href="{{ route('order.index') }}" class="text-gray-700 hover:text-blue-600">Tiketku</a>
-        <a href="{{ route('user.settings') }}" class="text-gray-700 hover:text-blue-600">Settings</a>
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="text-left text-gray-700 hover:text-blue-600">Logout</button>
-        </form>
-        @else
-        <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">LOGIN</a>
-        @endif
       </nav>
     </div>
   </header>
@@ -422,7 +439,51 @@
             }, 3000); // Tampilkan selama 3 detik
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    // Dropdown Event Desktop
+    const eventToggle = document.getElementById('eventDropdownToggle');
+    const eventDropdown = document.getElementById('eventDropdown');
+    if (eventToggle && eventDropdown) {
+      eventToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        eventDropdown.classList.toggle('hidden');
+      });
+      // Tutup dropdown jika klik di luar
+      document.addEventListener('click', function (e) {
+        if (!eventDropdown.contains(e.target) && !eventToggle.contains(e.target)) {
+          eventDropdown.classList.add('hidden');
+        }
+      });
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Dropdown Event Mobile
+    const mobileEventToggle = document.getElementById('mobileEventDropdownToggle');
+    const mobileEventDropdown = document.getElementById('mobileEventDropdown');
+    const mobileEventChevron = document.getElementById('mobileEventChevron');
+    if (mobileEventToggle && mobileEventDropdown) {
+        mobileEventToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            mobileEventDropdown.classList.toggle('hidden');
+            // Putar chevron
+            if (mobileEventChevron) {
+                mobileEventChevron.classList.toggle('rotate-180', !mobileEventDropdown.classList.contains('hidden'));
+            }
+        });
+        document.addEventListener('click', function (e) {
+            if (!mobileEventDropdown.contains(e.target) && !mobileEventToggle.contains(e.target)) {
+                mobileEventDropdown.classList.add('hidden');
+                if (mobileEventChevron) {
+                    mobileEventChevron.classList.remove('rotate-180');
+                }
+            }
+        });
+    }
+});
   </script>
+   @stack('scripts')
 </body>
 
 </html>
